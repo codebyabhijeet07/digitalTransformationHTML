@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reusable Material Tables</title>
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .table-box {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        input.table-filter {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        select.rowsPerPageSelect {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            min-width: 120px;
+        }
+
+        .entries-info {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f7f7f7;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        tr:hover {
+            background: #ffe082;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            margin: 0 3px 5px 3px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            background: #ffc107;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #e0a800;
+            color: #fff;
+        }
+
+        .pagination button:hover {
+            background: #e0a800;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="table-box" id="table1-box">
+        <h2>Users Table</h2>
+        <div class="table-controls">
+            <input type="text" class="table-filter" placeholder="Search...">
+            <select class="rowsPerPageSelect">
+                <option value="5">5 rows</option>
+                <option value="10">10 rows</option>
+                <option value="20">20 rows</option>
+            </select>
+        </div>
+        <div class="entries-info">Showing 0 to 0 of 0 entries</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Country</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="pagination"></div>
+    </div>
+
+    <div class="table-box" id="table2-box">
+        <h2>Products Table</h2>
+        <div class="table-controls">
+            <input type="text" class="table-filter" placeholder="Search...">
+            <select class="rowsPerPageSelect">
+                <option value="5">5 rows</option>
+                <option value="10">10 rows</option>
+                <option value="20">20 rows</option>
+            </select>
+        </div>
+        <div class="entries-info">Showing 0 to 0 of 0 entries</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="pagination"></div>
+    </div>
+
+    <script>
+        // Generic Table Class
+        class MaterialTable {
+            constructor(container, data) {
+                this.container = container;
+                this.data = data;
+                this.filteredData = [...data];
+                this.currentPage = 1;
+                this.rowsPerPage = parseInt(container.querySelector('.rowsPerPageSelect').value);
+                this.tableBody = container.querySelector('tbody');
+                this.filterInput = container.querySelector('.table-filter');
+                this.pagination = container.querySelector('.pagination');
+                this.entriesInfo = container.querySelector('.entries-info');
+                this.rowsSelect = container.querySelector('.rowsPerPageSelect');
+
+                // Events
+                this.filterInput.addEventListener('input', () => this.filterTable());
+                this.rowsSelect.addEventListener('change', () => this.changeRowsPerPage());
+
+                this.renderTable();
+            }
+
+            renderTable() {
+                this.tableBody.innerHTML = "";
+                const start = (this.currentPage - 1) * this.rowsPerPage;
+                const end = Math.min(start + this.rowsPerPage, this.filteredData.length);
+                const pageData = this.filteredData.slice(start, end);
+
+                pageData.forEach(item => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = Object.values(item).map(v => `<td>${v}</td>`).join("");
+                    this.tableBody.appendChild(tr);
+                });
+
+                this.renderPagination();
+                this.updateEntriesInfo(start + 1, end, this.filteredData.length);
+            }
+
+            renderPagination() {
+                this.pagination.innerHTML = "";
+                const totalPages = Math.ceil(this.filteredData.length / this.rowsPerPage);
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.innerText = i;
+                    if (i === this.currentPage) btn.classList.add('active');
+                    btn.addEventListener('click', () => {
+                        this.currentPage = i;
+                        this.renderTable();
+                    });
+                    this.pagination.appendChild(btn);
+                }
+            }
+
+            updateEntriesInfo(start, end, total) {
+                if (total === 0) this.entriesInfo.innerText = "Showing 0 to 0 of 0 entries";
+                else this.entriesInfo.innerText = `Showing ${start} to ${end} of ${total} entries`;
+            }
+
+            filterTable() {
+                const filter = this.filterInput.value.toLowerCase();
+                this.filteredData = this.data.filter(item => {
+                    return Object.values(item).some(val => val.toString().toLowerCase().includes(filter));
+                });
+                this.currentPage = 1;
+                this.renderTable();
+            }
+
+            changeRowsPerPage() {
+                this.rowsPerPage = parseInt(this.rowsSelect.value);
+                this.currentPage = 1;
+                this.renderTable();
+            }
+        }
+
+        // Example data
+        const usersData = [
+            { id: 1, name: "John Doe", email: "john@example.com", country: "USA", age: 28 },
+            { id: 2, name: "Jane Smith", email: "jane@example.com", country: "UK", age: 32 },
+            { id: 3, name: "Alice Johnson", email: "alice@example.com", country: "Canada", age: 24 },
+            { id: 4, name: "Bob Brown", email: "bob@example.com", country: "Australia", age: 40 },
+            { id: 5, name: "Charlie Lee", email: "charlie@example.com", country: "Germany", age: 29 },
+            { id: 6, name: "David Kim", email: "david@example.com", country: "USA", age: 35 },
+        ];
+
+        const productsData = [
+            { id: 1, Product: "Laptop", Category: "Electronics", Price: "1200$" },
+            { id: 2, Product: "Phone", Category: "Electronics", Price: "800$" },
+            { id: 3, Product: "Shoes", Category: "Fashion", Price: "120$" },
+            { id: 4, Product: "T-Shirt", Category: "Fashion", Price: "25$" },
+            { id: 5, Product: "Book", Category: "Education", Price: "15$" },
+            { id: 6, Product: "Backpack", Category: "Accessories", Price: "45$" },
+        ];
+
+        // Initialize tables
+        new MaterialTable(document.getElementById('table1-box'), usersData);
+        new MaterialTable(document.getElementById('table2-box'), productsData);
+    </script>
+
+</body>
+
+</html>

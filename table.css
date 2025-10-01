@@ -1,0 +1,79 @@
+    
+      .table-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        input.table-filter {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        select.rowsPerPageSelect {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            min-width: 120px;
+        }
+
+        .entries-info {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f7f7f7;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        tr:hover {
+            background: #ffe082;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            margin: 0 3px 5px 3px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            background: var(--item-text);
+            color: var(--logo-text);
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: var(--bg-primary);
+            color: #fff;
+        }
+
+        .pagination button:hover {
+            opacity: 0.8;
+        }

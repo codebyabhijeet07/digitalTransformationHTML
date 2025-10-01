@@ -1,0 +1,106 @@
+
+        .material-box {
+            width: 500px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 48px 40px 36px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .material-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .material-field {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .material-field-input {
+            font-size: 16px;
+            padding: 13px 15px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background: none;
+        }
+
+        .material-field-input:focus {
+            outline: none;
+            border: 2px solid #ffc107;
+        }
+
+        .material-field-label {
+            color: #999;
+            font-size: 16px;
+            position: absolute;
+            pointer-events: none;
+            top: 15px;
+            left: 8px;
+            transition: 150ms ease;
+            background: #fff;
+            padding: 0 5px;
+        }
+
+        .material-field-input:focus~.material-field-label,
+        .material-field-input:not(:placeholder-shown)~.material-field-label,
+        .material-field-input.filled~.material-field-label {
+            color: #ffc107;
+            transform: scale(0.75) translate(-13px, -30px);
+        }
+
+        .material-btn {
+            display: inline-block;
+            background: #ffc107;
+            color: #212121;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .material-btn:hover {
+            background: #e0a800;
+        }
+
+        .material-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .material-option input {
+            margin-right: 10px;
+        }
+
+        .searchable-select {
+            width: 100%;
+            padding: 13px 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        .options-list {
+            border: 1px solid #ddd;
+            border-top: none;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+            position: absolute;
+            width: 100%;
+            background: #fff;
+            z-index: 10;
+        }
+
+        .options-list div {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .options-list div:hover {
+            background: #f0f0f0;
+        }
